@@ -16,6 +16,7 @@
                 <enabled>0</enabled>
                 <allow_delete>1</allow_delete>
                 <anonymize_orders>1</anonymize_orders>
+                <delete_email_template>zero_consent_privacy_delete_email_template</delete_email_template>
             </privacy>
         </zero_consent>
     </default>

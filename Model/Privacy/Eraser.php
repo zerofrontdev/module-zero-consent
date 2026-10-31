@@ -10,13 +10,15 @@ namespace Zero\Consent\Model\Privacy;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Registry;
 use Psr\Log\LoggerInterface;
 
 /**
  * Deletes a customer's account at their request: every section's data
  * deleted or anonymized, then the account, in one transaction. The log keeps
- * that it happened (account id and date), not who it was.
+ * that it happened (account id and date), not who it was. After the commit
+ * `zero_consent_account_erased` (customer_id) fires.
  */
 class Eraser
 {
@@ -25,7 +27,8 @@ class Eraser
         private readonly Sections $sections,
         private readonly ResourceConnection $resource,
         private readonly Registry $registry,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly ManagerInterface $eventManager
     ) {
     }
 
@@ -50,5 +53,6 @@ class Eraser
             }
         }
         $this->logger->info(sprintf('Zero_Consent: customer account %d deleted at the customer\'s request.', $customerId));
+        $this->eventManager->dispatch('zero_consent_account_erased', ['customer_id' => $customerId]);
     }
 }

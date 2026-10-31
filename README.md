@@ -53,6 +53,14 @@ A tracker registers with `Zero\Consent\Model\Trackers` (di.xml) through
   amounts, items, country, region and tax. Reviews, blog comments and
   returns stay without the name and email. The log records that account
   N was deleted, not who it was.
+  An account without a password (made by a social sign-in) has no
+  password field: the button emails a link to the account's address
+  (**Deletion Link Email**; valid one hour, used once, at most one email a
+  minute). The link opens `/privacy/account/confirmdelete`, which moves the
+  token out of the address and asks to confirm; only the POST deletes, so
+  a mail scanner opening the link changes nothing. The browser does not
+  need to be signed in. After the account is deleted,
+  `zero_consent_account_erased` (customer_id) fires.
 
 Settings: Stores > Configuration > Zero > Cookie Consent > Personal Data
 (GDPR): the page on or off, whether customers can delete their account
@@ -69,6 +77,8 @@ needs no code: a virtual type names the table, the columns for the
 download, the customer id or email column, and whether erasing deletes the
 rows or anonymizes some columns (see this module's etc/di.xml). A table
 that doesn't exist is skipped.
+
+What changed in each release: [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

@@ -8,8 +8,10 @@ declare(strict_types=1);
 
 namespace Zero\Consent\ViewModel;
 
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Zero\Consent\Model\Config;
+use Zero\Consent\Model\Privacy\Accounts;
 
 /**
  * What My Account > Privacy offers in this store view.
@@ -17,8 +19,16 @@ use Zero\Consent\Model\Config;
 class Privacy implements ArgumentInterface
 {
     public function __construct(
-        private readonly Config $config
+        private readonly Config $config,
+        private readonly CustomerSession $customerSession,
+        private readonly Accounts $accounts
     ) {
+    }
+
+    /** The account deletes itself with its password; false: through an emailed link (no password). */
+    public function needsPassword(): bool
+    {
+        return $this->accounts->hasPassword((int) $this->customerSession->getCustomerId());
     }
 
     public function allowsDeletion(): bool

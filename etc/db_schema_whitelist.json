@@ -1,0 +1,15 @@
+{
+    "zero_privacy_deletion": {
+        "column": {
+            "customer_id": true,
+            "token_hash": true,
+            "created_at": true,
+            "expires_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_PRIVACY_DELETION_TOKEN_HASH": true,
+            "ZERO_PRIVACY_DELETION_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID": true
+        }
+    }
+}

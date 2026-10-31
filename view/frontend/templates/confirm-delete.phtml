@@ -1,0 +1,27 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * The emailed deletion link's page: a POST form (with the form key) that
+ * deletes the account, and a way out.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Zero\Consent\ViewModel\ConfirmDelete $viewModel
+ */
+$viewModel = $block->getData('viewModel');
+$email = $viewModel->email();
+?>
+<div class="zero-privacy-confirm-delete flex flex-col gap-4 max-w-2xl">
+    <?php if ($email === ''): ?>
+        <p class="text-sm"><?= $escaper->escapeHtml(__('This link has expired or was used already. Ask for a new one under My Account > Privacy.')) ?></p>
+    <?php else: ?>
+        <p><?= $escaper->escapeHtml(__('Delete the account %1 and its personal data? This cannot be undone.', $email)) ?></p>
+        <form method="post" action="<?= $escaper->escapeUrl($block->getUrl('privacy/account/confirmdeletepost')) ?>" class="flex flex-wrap items-center gap-4">
+            <?= $block->getBlockHtml('formkey') ?>
+            <button type="submit" class="btn btn-outline"><?= $escaper->escapeHtml(__('Delete my account')) ?></button>
+            <a class="link text-sm" href="<?= $escaper->escapeUrl($block->getBaseUrl()) ?>"><?= $escaper->escapeHtml(__('Keep my account')) ?></a>
+        </form>
+    <?php endif; ?>
+</div>

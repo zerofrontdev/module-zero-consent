@@ -5,8 +5,8 @@
  *
  * My Account > Privacy: download everything the store keeps about the
  * customer (JSON), and, when the store allows it, delete the account with
- * the password and a confirmation box. Plain forms with the form key, no
- * script.
+ * the password and a confirmation box (an account without a password: an
+ * emailed link). Plain forms with the form key, no script.
  *
  * @var \Magento\Framework\View\Element\Template $block
  * @var \Magento\Framework\Escaper $escaper
@@ -39,18 +39,23 @@ $policyUrl = $config->policyUrl();
                 <?php endif; ?>
                 <?= $escaper->escapeHtml(__('This cannot be undone: download your data first if you want a copy.')) ?>
             </p>
+            <?php $needsPassword = $config->needsPassword(); ?>
             <form method="post" action="<?= $escaper->escapeUrl($block->getUrl('privacy/account/delete')) ?>" class="flex flex-col gap-4" data-privacy-delete>
                 <?= $block->getBlockHtml('formkey') ?>
-                <label class="flex flex-col gap-1">
-                    <span class="text-sm font-semibold"><?= $escaper->escapeHtml(__('Your password')) ?></span>
-                    <input type="password" name="password" required autocomplete="current-password" class="input input-bordered w-full max-w-xs">
-                </label>
+                <?php if ($needsPassword): ?>
+                    <label class="flex flex-col gap-1">
+                        <span class="text-sm font-semibold"><?= $escaper->escapeHtml(__('Your password')) ?></span>
+                        <input type="password" name="password" required autocomplete="current-password" class="input input-bordered w-full max-w-xs">
+                    </label>
+                <?php else: ?>
+                    <p class="text-sm text-base-content/70"><?= $escaper->escapeHtml(__('Your account has no password, so we email you a link that deletes it.')) ?></p>
+                <?php endif; ?>
                 <label class="flex items-start gap-2 text-sm cursor-pointer">
                     <input type="checkbox" name="confirm" value="1" required class="checkbox checkbox-sm mt-0.5">
                     <span><?= $escaper->escapeHtml(__('I understand that my account and personal data will be deleted and cannot be restored.')) ?></span>
                 </label>
                 <div>
-                    <button type="submit" class="btn btn-outline"><?= $escaper->escapeHtml(__('Delete my account')) ?></button>
+                    <button type="submit" class="btn btn-outline"><?= $escaper->escapeHtml($needsPassword ? __('Delete my account') : __('Email me a link to delete my account')) ?></button>
                 </div>
             </form>
         <?php else: ?>

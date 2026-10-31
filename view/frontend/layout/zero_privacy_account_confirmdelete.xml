@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    The page of the emailed account deletion link (never cached: the block is not).
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="zero.privacy.confirm.delete" cacheable="false" template="Zero_Consent::confirm-delete.phtml">
+                <arguments>
+                    <argument name="viewModel" xsi:type="object">Zero\Consent\ViewModel\ConfirmDelete</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

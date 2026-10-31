@@ -1,0 +1,15 @@
+<!--@subject {{trans "Delete your %store account" store=$store_name}} @-->
+<!--@vars {
+"var name":"Customer name",
+"var email":"Account email",
+"var confirm_url":"Link that deletes the account",
+"var store_name":"Store name"
+} @-->
+{{template config_path="design/email/header_template"}}
+
+<p>{{trans "Hello %name," name=$name}}</p>
+<p>{{trans "You asked to delete your %store account (%email). Open this link within an hour and confirm to delete it with its personal data:" store=$store_name email=$email}}</p>
+<p><a href="{{var confirm_url}}">{{trans "Delete my account"}}</a></p>
+<p>{{trans "This cannot be undone. If you didn't ask for it, ignore this email: your account stays as it is."}}</p>
+
+{{template config_path="design/email/footer_template"}}

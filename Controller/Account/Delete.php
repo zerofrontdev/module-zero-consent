@@ -17,14 +17,19 @@ use Magento\Framework\Exception\InvalidEmailOrPasswordException;
 use Magento\Framework\Exception\State\UserLockedException;
 use Magento\Framework\Message\ManagerInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Zero\Consent\Model\Config;
+use Zero\Consent\Model\Privacy\Accounts;
+use Zero\Consent\Model\Privacy\DeletionLink;
 use Zero\Consent\Model\Privacy\Eraser;
 
 /**
  * "Delete my account": with the customer's password and the confirmation
  * box, they are signed out, their data is erased (Model\Privacy\Eraser) and
  * they land on the home page. A wrong password counts toward the account lock,
- * as on the sign-in form.
+ * as on the sign-in form. An account without a password (made by a social
+ * sign-in) gets an emailed link instead (ConfirmDelete): a session alone
+ * never deletes an account.
  */
 class Delete implements HttpPostActionInterface
 {
@@ -36,7 +41,10 @@ class Delete implements HttpPostActionInterface
         private readonly AuthenticationInterface $authentication,
         private readonly Eraser $eraser,
         private readonly Config $config,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly Accounts $accounts,
+        private readonly DeletionLink $deletionLink,
+        private readonly StoreManagerInterface $storeManager
     ) {
     }
 
@@ -55,8 +63,17 @@ class Delete implements HttpPostActionInterface
 
             return $redirect->setPath('privacy/account/index');
         }
+        if (!$this->accounts->hasPassword($customerId)) {
+            $email = $this->deletionLink->send($customerId, (int) $this->storeManager->getStore()->getId());
+            $this->messageManager->addSuccessMessage(
+                __('We\'ve emailed a link to %1. Open it within an hour to delete your account.', $email)
+            );
+
+            return $redirect->setPath('privacy/account/index');
+        }
+        $password = $this->request->getParam('password');
         try {
-            $this->authentication->authenticate($customerId, (string) $this->request->getParam('password'));
+            $this->authentication->authenticate($customerId, is_scalar($password) ? (string) $password : '');
         } catch (UserLockedException $e) {
             $this->messageManager->addErrorMessage(__('Your account is locked for a while after too many wrong passwords. Try again later.'));
 

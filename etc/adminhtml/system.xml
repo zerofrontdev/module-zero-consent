@@ -41,7 +41,7 @@
                 </field>
                 <field id="allow_delete" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Customers Can Delete Their Account</label>
-                    <comment>After confirming with their password. No: the page offers the download only, and asks them to write to the store.</comment>
+                    <comment>After confirming with their password (an account without a password, made by a social sign-in: through a link emailed to the account). No: the page offers the download only, and asks them to write to the store.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="enabled">1</field>
@@ -51,6 +51,15 @@
                     <label>Anonymize the Orders of a Deleted Account</label>
                     <comment>Yes: names, emails, addresses and phone numbers are taken off the customer's orders, invoices, shipments and credit memos; amounts, items, country and tax stay for the accounts. No: the orders keep them, where the law asks the store to keep its invoices as issued (art. 17(3)(b)); they become guest orders.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                        <field id="allow_delete">1</field>
+                    </depends>
+                </field>
+                <field id="delete_email_template" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Deletion Link Email</label>
+                    <comment>Sent to an account without a password that asks to be deleted: the link (valid one hour, used once) deletes it.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
                     <depends>
                         <field id="enabled">1</field>
                         <field id="allow_delete">1</field>
